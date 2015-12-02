@@ -1,6 +1,7 @@
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>Nikhil's chat</title>
+    
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
@@ -13,9 +14,11 @@
     </style>
     
     <script src="/js/socket.io-1.2.0.js"></script>
-    <script src="/js/jquery-1.11.1.js"></script>    
+    <script src="/js/jquery-1.11.1.js"></script>
     <script>
+    
       var socket = io();
+      
       socket.on('chat-message', function(msg) //Receiving Message
       {
       var newcontent = document.createElement('li');
@@ -23,6 +26,24 @@
       $('#messages').append(newcontent);
       });
       
+      function initial()
+      {
+      $('#name').focus();
+      $('#chat').hide();
+      $('#msg-box').hide();
+      }
+
+      function joinChat()
+      {
+      //Clean msg-box and chat -> To be done
+      socket.emit('join',$('#name').val());
+      $("#join-box").hide();
+      $("#chat").show();
+      $("#msg-box").show();
+      $("#msg").focus();
+      return false;
+      }
+
       function sendMessage()  //Sending Message
       {
       socket.emit('chat-message',$('#msg').val());
@@ -30,26 +51,31 @@
       return false;
       };
 
-      $('#msg').keypress(
-        function(event)
-        {
-        alert("Event"); 
-        if(event.keyCode==13)
-            {
-              sendMessage();
-            }
-        });
-
     </script>
-
   </head>
-  <body>
+
+<body onload="initial()">
+
+  <div id="join-box">
+    <form action="" onsubmit="event.preventDefault();  return joinChat();" id="join-form">
+    Enter a nick<input type="text" id="name">
+    <button>Join</button>
+    </form>
+  </div>
+
+  <div id="chat">
     <ul id="messages" style="border:solid;">
       <li> Messages </li>
     </ul>
-    <div id="msg-box">
-      <input type="text" id="msg"/>
-      <button onclick="sendMessage()">SEND</button>
-    </div>
-  </body>
+  </div>
+
+  <div id="msg-box">
+  <form action="" onsubmit="event.preventDefault();  return joinChat();" id="msg-form">
+    <input type="text" id="msg"/>
+    <button onclick="sendMessage()">SEND</button>
+  </form>
+  </div>
+  
+</body>
+
 </html>
