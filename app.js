@@ -3,7 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
-var people = {}
+var people = {};
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({
   extended:true
@@ -16,19 +16,28 @@ app.get('/', function (request, res)
 });
 
 io.on('connection', function(socket){
-  
+
   socket.on('join',function(person)
   {
-    var msg=person + ' has joined';
-    io.emit('chat-message',msg);
-    console.log(msg);
-    //people.append(person);
+    var msg=person+' has joined';
+    people[socket.id]=person;
+    io.emit('notice',msg);
+    io.emit('active-people',people);
   });
 
-  socket.on('chat-message', function(msg){
-    io.emit('chat-message', msg);
-    console.log('Message : '+msg);
+  socket.on('disconnect',function(person)
+  {
+    var msg=people[socket.id]+' has left';
+    io.emit('notice',msg);
+    delete people[socket.id];
+    io.emit('active-people',people);
   });
+
+  socket.on('chat-message', function(msg)
+  {
+    io.emit('chat-message', people[socket.id],msg);
+  });
+
 });
 
 

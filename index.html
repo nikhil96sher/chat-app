@@ -19,13 +19,29 @@
     
       var socket = io();
       
-      socket.on('chat-message', function(msg) //Receiving Message
-      {
+      socket.on('notice',function(msg){
       var newcontent = document.createElement('li');
       newcontent.innerHTML = msg;
       $('#messages').append(newcontent);
       });
+
+      socket.on('chat-message', function(person,msg) //Receiving Message
+      {
+      var newcontent = document.createElement('li');
+      newcontent.innerHTML = person+" says: "+msg;
+      $('#messages').append(newcontent);
+      });
       
+      socket.on('active-people',function(people)
+      {
+      $("#people").empty();
+      $.each(people,function(clientid,name)
+      {
+        $('#people').append(" -> "+name);
+      });
+
+      });
+
       function initial()
       {
       $('#name').focus();
@@ -63,6 +79,9 @@
     </form>
   </div>
 
+  <div id="people">
+  </div>
+
   <div id="chat">
     <ul id="messages" style="border:solid;">
       <li> Messages </li>
@@ -70,9 +89,9 @@
   </div>
 
   <div id="msg-box">
-  <form action="" onsubmit="event.preventDefault();  return joinChat();" id="msg-form">
+  <form action="" onsubmit="event.preventDefault();  return sendMessage();" id="msg-form">
     <input type="text" id="msg"/>
-    <button onclick="sendMessage()">SEND</button>
+    <button>SEND</button>
   </form>
   </div>
   
