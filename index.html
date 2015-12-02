@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      #msg-box { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+    
+    <script src="/js/socket.io-1.2.0.js"></script>
+    <script src="/js/jquery-1.11.1.js"></script>    
+    <script>
+      var socket = io();
+      socket.on('chat-message', function(msg) //Receiving Message
+      {
+      var newcontent = document.createElement('li');
+      newcontent.innerHTML = msg;
+      $('#messages').append(newcontent);
+      });
+      
+      function sendMessage()  //Sending Message
+      {
+      socket.emit('chat-message',$('#msg').val());
+      $('#msg').val('');
+      return false;
+      };
+
+      $('#msg').keypress(
+        function(event)
+        {
+        alert("Event"); 
+        if(event.keyCode==13)
+            {
+              sendMessage();
+            }
+        });
+
+    </script>
+
+  </head>
+  <body>
+    <ul id="messages" style="border:solid;">
+      <li> Messages </li>
+    </ul>
+    <div id="msg-box">
+      <input type="text" id="msg"/>
+      <button onclick="sendMessage()">SEND</button>
+    </div>
+  </body>
+</html>
