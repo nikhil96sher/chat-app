@@ -1,74 +1,65 @@
 <html>
-  <head>
+
+<head>
     <title>Nikhil's chat</title>
     
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      #msg-box { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-    </style>
-    
+    <link rel="stylesheet" type="text/css" href="/css/style.css"> 
+
     <script src="/js/socket.io-1.2.0.js"></script>
     <script src="/js/jquery-1.11.1.js"></script>
     <script>
+
+    var socket = io();
     
-      var socket = io();
-      
-      socket.on('notice',function(msg){
-      var newcontent = document.createElement('li');
-      newcontent.innerHTML = msg;
-      $('#messages').append(newcontent);
-      });
+    socket.on('notice',function(msg){
+    var newcontent = document.createElement('li');
+    newcontent.innerHTML = msg;
+    $('#messages').append(newcontent);
+    });
 
-      socket.on('chat-message', function(person,msg) //Receiving Message
-      {
-      var newcontent = document.createElement('li');
-      newcontent.innerHTML = person+" says: "+msg;
-      $('#messages').append(newcontent);
-      });
-      
-      socket.on('active-people',function(people)
-      {
-      $("#people").empty();
-      $.each(people,function(clientid,name)
-      {
-        $('#people').append(" -> "+name);
-      });
+    socket.on('chat-message', function(person,msg) //Receiving Message
+    {
+    var newcontent = document.createElement('li');
+    newcontent.innerHTML = person+" says: "+msg;
+    $('#messages').append(newcontent);
+    });
+    
+    socket.on('active-people',function(people)  //List of active Users
+    {
+    $("#people").empty();
+    $.each(people,function(clientid,name)
+    {
+      $('#people').append(" -> "+name);
+    });
+    });
 
-      });
+    function initial()
+    {
+    $('#name').focus();
+    $('#chat').hide();
+    $('#msg-box').hide();
+    }
 
-      function initial()
-      {
-      $('#name').focus();
-      $('#chat').hide();
-      $('#msg-box').hide();
-      }
+    function joinChat()
+    {
+    //Clean msg-box and chat -> To be done
+    socket.emit('join',$('#name').val());
+    $("#join-box").hide();
+    $("#chat").show();
+    $("#msg-box").show();
+    $("#msg").focus();
+    return false;
+    }
 
-      function joinChat()
-      {
-      //Clean msg-box and chat -> To be done
-      socket.emit('join',$('#name').val());
-      $("#join-box").hide();
-      $("#chat").show();
-      $("#msg-box").show();
-      $("#msg").focus();
-      return false;
-      }
-
-      function sendMessage()  //Sending Message
-      {
-      socket.emit('chat-message',$('#msg').val());
-      $('#msg').val('');
-      return false;
-      };
+    function sendMessage()  //Sending Message
+    {
+    socket.emit('chat-message',$('#msg').val());
+    $('#msg').val('');
+    return false;
+    };
 
     </script>
-  </head>
+</head>
 
 <body onload="initial()">
 
@@ -89,12 +80,11 @@
   </div>
 
   <div id="msg-box">
-  <form action="" onsubmit="event.preventDefault();  return sendMessage();" id="msg-form">
-    <input type="text" id="msg"/>
-    <button>SEND</button>
-  </form>
+    <form action="" onsubmit="event.preventDefault();  return sendMessage();" id="msg-form">
+      <input type="text" id="msg"/>
+      <button>SEND</button>
+    </form>
   </div>
   
 </body>
-
 </html>
