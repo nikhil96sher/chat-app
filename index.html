@@ -47,6 +47,11 @@
     function joinChat()
     {
     //Clean msg-box and chat -> To be done
+    if($("#name").val()=="")
+    {
+        alert("Go get a nick first");
+        return false;
+    }
     socket.emit('join',$("#name").val());
     $("#join-box").hide();
     $("#chat").show();

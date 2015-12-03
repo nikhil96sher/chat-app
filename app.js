@@ -52,8 +52,7 @@ io.on('connection', function(socket){
 });
 
 
-var server = http.listen(3000, function () {
-var host = server.address().address;
-var port = server.address().port;
+var port = parseInt(process.argv[2],10)||3000;
+var host = process.argv[3] || "localhost";
+var server = http.listen(port, host);
 console.log('Example app listening at http://%s:%s', host, port);
-});
