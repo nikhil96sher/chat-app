@@ -1,8 +1,78 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font: 13px Helvetica, Arial; }
-#msg-box { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+input { border-radius: 10px; padding: 10px; width: 90%; margin-right: .5%; }
+button { border-radius: 10px;width: 9%; background: rgb(130, 224, 255);  padding: 10px; }
+
+#join-table
+{
+	background: #eee;
+	text-align: center;
+	border-radius: 10px;
+	border: solid;
+	margin-left: 2%;
+	margin-right: 2%;
+	width: 96%;
+	height: 20%;
+
+}
+
+#people-box
+{
+	background: #eee;
+	border-radius: 10px;
+	border: solid;
+	min-height: 87%;
+	margin-top: 1%;
+	margin-right: 1%;
+	padding: 5px;
+	position: fixed;
+	right: 0;
+	width: 20%;
+}
+
+#chat
+{
+	background: #eee;
+	border-radius: 10px;
+	border: solid;
+	padding: 5px;
+	position: fixed;
+	min-height: 87%;
+	left:0;
+	margin-top: 1%;
+	margin-left: 1%;
+	width:77%;
+	word-wrap:break-word;
+}
+
 #messages { list-style-type: none; margin: 0; padding: 0; }
 #messages li { padding: 5px 10px; }
 #messages li:nth-child(odd) { background: #eee; }
+
+#msg
+{
+	width:79%;
+}
+
+#msg-box
+{
+	background: #000;
+	padding: 3px;
+	position: fixed;
+	bottom: 0;
+	border-radius: 10px;
+	border: solid;
+	margin-left: 1%;
+	margin-right: 1%;
+	margin-bottom: 1%;
+	width: 98%;
+}
+
+#send
+{
+	margin-left: 0.5%;
+}
+#leave
+{
+	margin-left: 1%;
+}

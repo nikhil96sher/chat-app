@@ -10,49 +10,72 @@
     <script>
 
     var socket = io();
-    
-    socket.on('notice',function(msg){
+    var useractive=false;
+
+    socket.on('notice',function(msg)
+    {
     var newcontent = document.createElement('li');
-    newcontent.innerHTML = msg;
+    newcontent.innerHTML = '<b>'+msg+'</b>';
     $('#messages').append(newcontent);
     });
 
-    socket.on('chat-message', function(person,msg) //Receiving Message
+    socket.on('chat-message', function(person,color,msg) //Receiving Message
     {
     var newcontent = document.createElement('li');
-    newcontent.innerHTML = person+" says: "+msg;
+    newcontent.innerHTML = '<b><font color="'+color+'">'+ person+" says: "+msg+'</font></b>';
     $('#messages').append(newcontent);
     });
     
     socket.on('active-people',function(people)  //List of active Users
     {
     $("#people").empty();
-    $.each(people,function(clientid,name)
-    {
-      $('#people').append(" -> "+name);
-    });
+    $("#people").append('<tr><td>ONLINE NOW</td></tr>');
+        $.each(people,function(clientid,name)
+        {
+          $('#people').append('<tr><td>'+name+'</td></tr>');
+        });
     });
 
     function initial()
     {
     $('#name').focus();
     $('#chat').hide();
+    $('#people-box').hide();
     $('#msg-box').hide();
     }
 
     function joinChat()
     {
     //Clean msg-box and chat -> To be done
-    socket.emit('join',$('#name').val());
+    socket.emit('join',$("#name").val());
     $("#join-box").hide();
     $("#chat").show();
+    $("#people-box").show();
     $("#msg-box").show();
     $("#msg").focus();
+    useractive=true;
     return false;
+    }
+
+    function leaveChat()
+    {
+        alert("Bye!! Hope to see u soon...");
+        window.location.href='';
+        useractive=false;
+        return true;
     }
 
     function sendMessage()  //Sending Message
     {
+    if(!useractive)
+    {
+        return false;
+    }
+    else if($('#msg').val()=="")
+        {
+        alert("Atleast type something");
+        return false;
+        }
     socket.emit('chat-message',$('#msg').val());
     $('#msg').val('');
     return false;
@@ -65,24 +88,33 @@
 
   <div id="join-box">
     <form action="" onsubmit="event.preventDefault();  return joinChat();" id="join-form">
-    Enter a nick<input type="text" id="name">
-    <button>Join</button>
+        <table id="join-table">
+        <tr><td>Enter a nick</td></tr>
+        <tr><td><input type="text" id="name"></td></tr>
+        <tr><td><button>Join</button></td></tr>
+        </table>
     </form>
   </div>
 
-  <div id="people">
+  <div id="people-box">
+      <table id="people">
+      <tr>
+      <td>ONLINE NOW
+      </td> </tr>
+      </table>
   </div>
 
   <div id="chat">
-    <ul id="messages" style="border:solid;">
-      <li> Messages </li>
+  Messages
+    <ul id="messages">
     </ul>
   </div>
 
   <div id="msg-box">
-    <form action="" onsubmit="event.preventDefault();  return sendMessage();" id="msg-form">
+    <form action="/" onsubmit="event.preventDefault();  return sendMessage();" id="msg-form">
       <input type="text" id="msg"/>
-      <button>SEND</button>
+      <button id="send">SEND</button>
+      <button id="leave" onclick="leaveChat()">LEAVE</button>
     </form>
   </div>
   
